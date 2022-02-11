@@ -21,7 +21,7 @@ public class PDUtils {
     private ItemMeta meta;
     private Player player;
     private PersistentDataContainer container;
-    private NamespacedKey key;
+    private final NamespacedKey key;
 
     public PDUtils(Plugin plugin, ItemStack item, String key) {
         this.item = item;
@@ -33,8 +33,7 @@ public class PDUtils {
         }
     }
 
-    public PDUtils(Plugin plugin, Player player, String key) {
-        this.player = player;
+    public PDUtils(Plugin plugin, String key) {
         this.key = new NamespacedKey(plugin, key);
     }
 
