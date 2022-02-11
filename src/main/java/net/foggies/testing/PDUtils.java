@@ -34,8 +34,10 @@ public class PDUtils {
         }
     }
 
-    public PDUtils(Plugin plugin, String key) {
+    public PDUtils(Plugin plugin, Player player, String key) {
+        this.player = player;
         this.key = new NamespacedKey(plugin, key);
+        this.container = player.getPersistentDataContainer();
     }
 
     public <T extends Number, Z extends Number> void subtract(final PersistentDataType<T, Z> dataType, Z value) {
