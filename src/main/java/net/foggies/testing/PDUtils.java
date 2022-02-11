@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 
 /*
     A utility class for easily editing the persistent
@@ -22,50 +23,62 @@ public class PDUtils {
     private PersistentDataContainer container;
     private NamespacedKey key;
 
-    public PDUtils(ItemStack item, String key) {
+    public PDUtils(Plugin plugin, ItemStack item, String key) {
         this.item = item;
-        this.key = new NamespacedKey(Testing.getPlugin(Testing.class), key);
+        this.key = new NamespacedKey(plugin, key);
 
         if (item.getItemMeta() != null) {
             this.meta = item.getItemMeta();
-            this.container = item.getItemMeta().getPersistentDataContainer();
+            this.container = this.meta.getPersistentDataContainer();
         }
     }
 
-    public PDUtils(Player player, String key) {
+    public PDUtils(Plugin plugin, Player player, String key) {
         this.player = player;
-        this.key = new NamespacedKey(Testing.getPlugin(Testing.class), key);
+        this.key = new NamespacedKey(plugin, key);
     }
 
-    public <T extends Number, Z extends Number> void subtract(PersistentDataType<T, Z> dataType, Z value) {
+    public <T extends Number, Z extends Number> void subtract(final PersistentDataType<T, Z> dataType, Z value) {
         if (!has(dataType)) {
             set(dataType, value);
             return;
         }
 
-        set(dataType, GenericUtils.subtract(get(dataType), value));
+        Z current = get(dataType);
+
+        if(current == null) {
+            throw new NullPointerException("There is no persistent data type on within this container with the key: " + key);
+        }
+
+        set(dataType, GenericUtils.subtract(current, value));
     }
 
-    public <T extends Number, Z extends Number> void add(PersistentDataType<T, Z> dataType, Z value) {
+    public <T extends Number, Z extends Number> void add(final PersistentDataType<T, Z> dataType, Z value) {
         if (!has(dataType)) {
             set(dataType, value);
             return;
         }
 
-        set(dataType, GenericUtils.add(get(dataType), value));
+        Z current = get(dataType);
+
+        if(current == null) {
+            throw new NullPointerException("There is no persistent data type on within this container with the key: " + key);
+        }
+
+        set(dataType, GenericUtils.add(current, value));
     }
 
-    public <T, Z> Z get(PersistentDataType<T, Z> dataType) {
+    public <T, Z> Z get(final PersistentDataType<T, Z> dataType) {
         if (!has(dataType)) return null;
         return this.container.get(this.key, dataType);
     }
 
-    public <T, Z> void set(PersistentDataType<T, Z> dataType, Z value) {
+    public <T, Z> void set(final PersistentDataType<T, Z> dataType, Z value) {
         this.container.set(this.key, dataType, value);
         saveItem();
     }
 
-    public <T, Z> boolean has(PersistentDataType<T, Z> dataType) {
+    public <T, Z> boolean has(final PersistentDataType<T, Z> dataType) {
         return this.container.has(this.key, dataType);
     }
 
