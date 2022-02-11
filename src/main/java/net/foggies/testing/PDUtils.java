@@ -1,5 +1,6 @@
 package net.foggies.testing;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,10 +45,7 @@ public class PDUtils {
         }
 
         Z current = get(dataType);
-
-        if(current == null) {
-            throw new NullPointerException("There is no persistent data type on within this container with the key: " + key);
-        }
+        Validate.notNull(current, "There is no persistent data type on within this container with the key: " + key);
 
         set(dataType, GenericUtils.subtract(current, value));
     }
@@ -59,10 +57,7 @@ public class PDUtils {
         }
 
         Z current = get(dataType);
-
-        if(current == null) {
-            throw new NullPointerException("There is no persistent data type on within this container with the key: " + key);
-        }
+        Validate.notNull(current, "There is no persistent data type on within this container with the key: " + key);
 
         set(dataType, GenericUtils.add(current, value));
     }
