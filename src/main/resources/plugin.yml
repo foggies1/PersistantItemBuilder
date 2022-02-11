@@ -1,0 +1,6 @@
+name: Testing
+version: '${project.version}'
+main: net.foggies.testing.Testing
+api-version: 1.17
+authors: [ foggies ]
+description: Testing plugin for Java
