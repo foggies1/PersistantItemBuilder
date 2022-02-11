@@ -10,7 +10,7 @@ import org.bukkit.persistence.PersistentDataType;
 /*
     A utility class for easily editing the persistent
     data of players and items.
-    
+
     Created by foggies 11/02/2022
     https://github.com/foggies1
  */
@@ -56,6 +56,7 @@ public class PDUtils {
     }
 
     public <T, Z> Z get(PersistentDataType<T, Z> dataType) {
+        if (!has(dataType)) return null;
         return this.container.get(this.key, dataType);
     }
 
