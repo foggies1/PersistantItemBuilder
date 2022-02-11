@@ -1,5 +1,6 @@
 package net.foggies.testing;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +22,7 @@ public class PDUtils {
     private ItemMeta meta;
     private Player player;
     private PersistentDataContainer container;
-    private NamespacedKey key;
+    private final NamespacedKey key;
 
     public PDUtils(Plugin plugin, ItemStack item, String key) {
         this.item = item;
@@ -33,8 +34,7 @@ public class PDUtils {
         }
     }
 
-    public PDUtils(Plugin plugin, Player player, String key) {
-        this.player = player;
+    public PDUtils(Plugin plugin, String key) {
         this.key = new NamespacedKey(plugin, key);
     }
 
@@ -45,10 +45,7 @@ public class PDUtils {
         }
 
         Z current = get(dataType);
-
-        if(current == null) {
-            throw new NullPointerException("There is no persistent data type on within this container with the key: " + key);
-        }
+        Validate.notNull(current, "There is no persistent data type on within this container with the key: " + key);
 
         set(dataType, GenericUtils.subtract(current, value));
     }
@@ -60,10 +57,7 @@ public class PDUtils {
         }
 
         Z current = get(dataType);
-
-        if(current == null) {
-            throw new NullPointerException("There is no persistent data type on within this container with the key: " + key);
-        }
+        Validate.notNull(current, "There is no persistent data type on within this container with the key: " + key);
 
         set(dataType, GenericUtils.add(current, value));
     }
