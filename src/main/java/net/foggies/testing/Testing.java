@@ -38,6 +38,8 @@ public final class Testing extends JavaPlugin implements Listener {
                 .addEnchantment(Enchantment.DIG_SPEED, 100)
                 .hideFlags(true)
                 .putData("level", PersistentDataType.LONG, 1L)
+                .putData("blocks", PersistentDataType.LONG, 10L)
+                .putData("money", PersistentDataType.DOUBLE, 59D)
                 .makeItem();
 
         Player player = e.getPlayer();
