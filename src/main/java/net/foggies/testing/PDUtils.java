@@ -18,15 +18,16 @@ import org.bukkit.plugin.Plugin;
  */
 public class PDUtils {
 
+    private final Plugin plugin;
     private ItemStack item;
     private ItemMeta meta;
     private Player player;
     private PersistentDataContainer container;
-    private final NamespacedKey key;
+    private NamespacedKey key;
 
-    public PDUtils(Plugin plugin, ItemStack item, String key) {
+    public PDUtils(Plugin plugin, ItemStack item) {
+        this.plugin = plugin;
         this.item = item;
-        this.key = new NamespacedKey(plugin, key);
 
         if (item.getItemMeta() != null) {
             this.meta = item.getItemMeta();
@@ -34,53 +35,63 @@ public class PDUtils {
         }
     }
 
-    public PDUtils(Plugin plugin, Player player, String key) {
+    public PDUtils(Plugin plugin, Player player) {
+        this.plugin = plugin;
         this.player = player;
-        this.key = new NamespacedKey(plugin, key);
         this.container = player.getPersistentDataContainer();
     }
 
-    public <T extends Number, Z extends Number> void subtract(final PersistentDataType<T, Z> dataType, Z value) {
-        if (!has(dataType)) {
-            set(dataType, value);
-            return;
+    public <T extends Number, Z extends Number> PDUtils subtract(final String key, final PersistentDataType<T, Z> dataType, Z value) {
+        setKey(key);
+
+        if (!has(key, dataType)) {
+            return set(key, dataType, value);
         }
 
-        Z current = get(dataType);
+        Z current = get(key, dataType);
         Validate.notNull(current, "There is no persistent data type on within this container with the key: " + key);
 
-        set(dataType, GenericUtils.subtract(current, value));
+        return set(key, dataType, GenericUtils.subtract(current, value));
     }
 
-    public <T extends Number, Z extends Number> void add(final PersistentDataType<T, Z> dataType, Z value) {
-        if (!has(dataType)) {
-            set(dataType, value);
-            return;
+    public <T extends Number, Z extends Number> PDUtils add(final String key, final PersistentDataType<T, Z> dataType, Z value) {
+        setKey(key);
+
+        if (!has(key, dataType)) {
+            return set(key, dataType, value);
         }
 
-        Z current = get(dataType);
+        Z current = get(key, dataType);
         Validate.notNull(current, "There is no persistent data type on within this container with the key: " + key);
 
-        set(dataType, GenericUtils.add(current, value));
+        return set(key, dataType, GenericUtils.add(current, value));
     }
 
-    public <T, Z> Z get(final PersistentDataType<T, Z> dataType) {
-        if (!has(dataType)) return null;
+    public <T, Z> Z get(final String key, final PersistentDataType<T, Z> dataType) {
+        setKey(key);
+        if (!has(key, dataType)) return null;
         return this.container.get(this.key, dataType);
     }
 
-    public <T, Z> void set(final PersistentDataType<T, Z> dataType, Z value) {
+    public <T, Z> PDUtils set(final String key, final PersistentDataType<T, Z> dataType, Z value) {
+        setKey(key);
         this.container.set(this.key, dataType, value);
         saveItem();
+        return this;
     }
 
-    public <T, Z> boolean has(final PersistentDataType<T, Z> dataType) {
+    public <T, Z> boolean has(final String key, final PersistentDataType<T, Z> dataType) {
+        setKey(key);
         return this.container.has(this.key, dataType);
     }
 
-    public void saveItem() {
+    private void saveItem() {
         if (this.item != null)
             this.item.setItemMeta(meta);
+    }
+
+    private void setKey(final String key) {
+        this.key = new NamespacedKey(this.plugin, key);
     }
 
 }
