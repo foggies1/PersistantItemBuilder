@@ -5,7 +5,7 @@ A ItemBuilder that supports adding persistent data to items.
 
 Giving the player and item via the ItemBuilder class.
 ```java
- @EventHandler
+    @EventHandler
     public void onJoin(PlayerJoinEvent e) {
 
         ItemStack itemStack = new ItemBuilder(this, "diamond_pickaxe")
@@ -18,6 +18,8 @@ Giving the player and item via the ItemBuilder class.
                 .addEnchantment(Enchantment.DIG_SPEED, 100)
                 .hideFlags(true)
                 .putData("level", PersistentDataType.LONG, 1L)
+                .putData("blocks", PersistentDataType.LONG, 10L)
+                .putData("money", PersistentDataType.DOUBLE, 59D)
                 .makeItem();
 
         Player player = e.getPlayer();
